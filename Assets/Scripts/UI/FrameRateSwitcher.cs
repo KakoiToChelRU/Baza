@@ -58,6 +58,6 @@ public class FrameRateSwitcher : MonoBehaviour
     {
         int targetFrameRate = frameRates[currentFrameRateIndex];
         Application.targetFrameRate = targetFrameRate; // Set the game's target frame rate
-        frameRateText.text = targetFrameRate + " FPS"; // Update the text display
+        frameRateText.text = targetFrameRate + ""; // Update the text display
     }
 }

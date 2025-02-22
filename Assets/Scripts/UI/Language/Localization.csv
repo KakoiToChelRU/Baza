@@ -1,5 +1,5 @@
 Key, Русский, English
-music, Название, Music
+music, Музыка, Music
 language, Язык, Language
 voiceover, Озвучка, Voiceover
 mouseSensivity, Чуств. мышки, Mouse Sensivity
@@ -8,3 +8,11 @@ screenResolution, Разреш. экрана, Screen Resolution
 fps, ФПС, FPS
 authors, Авторы, Authors
 socialMedia, Соц. сети, Social Media
+
+languagArg, Русский, English
+voiceoverArg, Русская, English
+windowedMode1, Эксклюзивный полноэкранный режим, Exclusive Fullscreen
+windowedMode2, Полноэкранное окно, Fullscreen Window
+windowedMode3, Развернутое окно, Maximized Window
+windowedMode4, В окне, Windowed
+authorsArg, Перейти, Follow
