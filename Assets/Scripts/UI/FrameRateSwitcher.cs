@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro; // Required for TextMeshPro
 using UnityEngine.UI; // Required for Button
 
+// [DontDestroyOnLoad] — это не класс, а атрибут для объектов GameObject.
 public class FrameRateSwitcher : MonoBehaviour
 {
     public TextMeshProUGUI frameRateText; // Assign in the Inspector
@@ -34,6 +35,11 @@ public class FrameRateSwitcher : MonoBehaviour
         rightArrowButton.onClick.AddListener(OnRightArrowClicked);
     }
 
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject); // Сохраняем объект при смене сцены
+    }
+
     public void OnLeftArrowClicked()
     {
         currentFrameRateIndex--;
@@ -58,6 +64,6 @@ public class FrameRateSwitcher : MonoBehaviour
     {
         int targetFrameRate = frameRates[currentFrameRateIndex];
         Application.targetFrameRate = targetFrameRate; // Set the game's target frame rate
-        frameRateText.text = targetFrameRate + ""; // Update the text display
+        frameRateText.text = targetFrameRate.ToString(); // Update the text display
     }
 }

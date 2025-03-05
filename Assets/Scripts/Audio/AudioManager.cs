@@ -1,84 +1,54 @@
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
-using System.IO;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance { get; private set; } 
+    private static AudioManager _instance;
 
-    [SerializeField] private AudioSource _musicSource;
-    [SerializeField] private float _defaultVolume = 0.5f; 
-    [SerializeField] private bool _resetSettings = false;
-    private const string SAVE_FILE = "volumeSettings.json";
-
-    public float Volume { get; private set; } 
-
-    private void Awake()
+    public static AudioManager Instance
     {
-        if (Instance != null && Instance != this)
+        get
         {
-            Destroy(gameObject);
-            return;
+            if (_instance == null)
+            {
+                // Если AudioManager еще не существует, попробуем найти его в сцене
+                _instance = FindObjectOfType<AudioManager>();
+
+                // Если AudioManager не найден, создадим новый GameObject и добавим к нему AudioManager
+                if (_instance == null)
+                {
+                    GameObject audioManagerGO = new GameObject("AudioManager");
+                    _instance = audioManagerGO.AddComponent<AudioManager>();
+                }
+
+                DontDestroyOnLoad(_instance.gameObject);
+            }
+            return _instance;
         }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
-    private void Start()
-    {
-        LoadVolume();
+    [Range(0f, 1f)]
+    public float Volume = 0.5f; // Начальное значение громкости
 
-        if (_musicSource == null)
+    void Awake()
+    {
+        // Гарантируем, что существует только один экземпляр AudioManager.
+        if (_instance != null && _instance != this)
         {
-            enabled = false;
+            Destroy(this.gameObject);
             return;
         }
-        _musicSource.volume = Volume;
+
+        _instance = this;
+        DontDestroyOnLoad(this.gameObject); // Не уничтожать AudioManager при загрузке новой сцены
     }
+
 
     public void SetVolume(float volume)
     {
-        Volume = Mathf.Clamp01(volume); 
-        _musicSource.volume = Volume;
-        SaveVolume(); 
-    }
+        Volume = Mathf.Clamp01(volume); // Убеждаемся, что громкость находится в диапазоне от 0 до 1
+        Debug.Log("Volume set to: " + Volume);
 
-    private void LoadVolume()
-    {
-        string path = Application.persistentDataPath + "/" + SAVE_FILE;
-        if (_resetSettings)
-        {
-            Debug.LogWarning("RESET VOLUME TRIGGERED");
-            _resetSettings = false;
-            if (File.Exists(path)) File.Delete(path);
-            Volume = _defaultVolume;
-            SetVolume(Volume);
-            return;
-        }
-        if (!File.Exists(path))
-        {
-            Volume = _defaultVolume;
-            SetVolume(Volume);
-            return;
-        }
-
-        string jsonData = File.ReadAllText(path);
-        SaveData data = JsonUtility.FromJson<SaveData>(jsonData);
-        Volume = data.volume;
-        SetVolume(Volume);
-    }
-
-    private void SaveVolume()
-    {
-        SaveData data = new() { volume = Volume };
-        string jsonData = JsonUtility.ToJson(data);
-        string path = Application.persistentDataPath + "/" + SAVE_FILE;
-        File.WriteAllText(path, jsonData);
-    }
-
-    private class SaveData
-    {
-        public float volume;
+        // Примените эту громкость ко всем AudioSource в вашей игре.
+        AudioListener.volume = Volume;
     }
 }

@@ -40,6 +40,11 @@ public class FullscreenSwitcher : MonoBehaviour
         rightArrowButton.onClick.AddListener(OnRightArrowClicked);
     }
 
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject); // Сохраняем объект при смене сцены
+    }
+
     public void OnLeftArrowClicked()
     {
         currentModeIndex--;
